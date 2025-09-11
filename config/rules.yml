@@ -1,0 +1,38 @@
+severity_weights:
+  critical: 3
+  major: 2
+  minor: 1
+
+required_sections:
+  - Purpose
+  - Scope
+  - Responsibilities
+  - Procedure
+  - References
+  - Records
+
+approvals_lines:
+  - Prepared by
+  - Reviewed by
+  - Approved by
+
+placeholder_patterns:
+  - '\\bTBD\\b'
+  - 'XXX+'
+  - '\\[\\s*placeholder\\s*\\]'
+  - '\bto be (determined|defined)\b'
+  - '\bN/?A\b'
+  - '_{3,}'                # long underscores/blank lines
+  - '<[^>]{2,}>'           # <DATE>, <NAME>, <FILL>, etc.
+  - '\bYYYY[-/ ]?MM[-/ ]?DD\b'  # template dates
+  - '\bDD[-/ ]?MM[-/ ]?YYYY\b'
+  - '\blorem ipsum\b'
+  - '\byour (company|organization) name\b'
+
+stale_reference:
+  # if a date older than years_threshold appears next to version/last updated
+  years_threshold: 3
+
+numbered_steps:
+  # Require numbered steps under Procedure
+  require_numbering: true
