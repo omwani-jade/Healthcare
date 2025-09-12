@@ -64,7 +64,7 @@ def _excerpt(text: str, start: int, end: int, radius: int = 80) -> str:
 	return f"{prefix}{snip}{suffix}"
 
 
-def _load_rules(path: str = "config/rules.yml") -> dict:
+def _load_rules(path: str = "../config/rules.yml") -> dict:
 	with open(path, "r", encoding="utf-8") as f:
 		return yaml.safe_load(f)
 
@@ -194,7 +194,7 @@ def _maybe_llm_findings(text: str) -> List[Finding]:
 		return []
 
 
-def validate_text(text: str, meta: Optional[Dict[str, str]] = None, rules_path: str = "config/rules.yml", kb: Optional[KB] = None) -> ValidationResult:
+def validate_text(text: str, meta: Optional[Dict[str, str]] = None, rules_path: str = "../config/rules.yml", kb: Optional[KB] = None) -> ValidationResult:
 	rules = _load_rules(rules_path)
 	findings: List[Finding] = []
 	findings += _detect_required_sections(text, rules.get("required_sections", []))

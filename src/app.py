@@ -6,10 +6,11 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, Response
 
-from src.compliance_assistant.parsers.factory import ParserFactory
-from src.compliance_assistant.validate import validate_text
-from src.compliance_assistant.kb import load_guidelines
-from src.compliance_assistant.sectionizer import split_into_sections
+from compliance_assistant.parsers.factory import ParserFactory
+from compliance_assistant.validate import validate_text
+from compliance_assistant.kb import load_guidelines
+from compliance_assistant.sectionizer import split_into_sections
+from frontend import get_frontend_html
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024 * 1024  # 128 MB
@@ -34,99 +35,8 @@ def health():
 
 @app.get("/")
 def index() -> Response:
-	html = (
-		"""
-		<!doctype html>
-		<html>
-		<head>
-			<meta charset=\"utf-8\" />
-			<title>Compliance Assistant - Parser</title>
-			<style>
-				body { font-family: Arial, sans-serif; margin: 32px; }
-				#out { white-space: pre-wrap; border: 1px solid #ccc; padding: 12px; margin-top: 12px; max-height: 50vh; overflow: auto; }
-				label { display: block; margin-bottom: 8px; }
-				button { padding: 8px 12px; margin-right: 8px; }
-				#meta { margin-top: 12px; }
-				#error { color: #b00020; margin-top: 12px; }
-				#fileinfo { margin: 6px 0 4px; color: #333; }
-				#reason { font-size: 12px; color: #b00020; margin-bottom: 12px; }
-				#kb { margin-top: 24px; padding: 10px; border: 1px dashed #aaa; }
-				.section { border:1px solid #e5e5e5; padding:8px; margin:8px 0; }
-				.section h4 { margin:0 0 6px 0; }
-			</style>
-		</head>
-		<body>
-			<h2>Upload a document (.txt, .docx, .pdf)</h2>
-			<form id=\"f\" method=\"post\" action=\"/parse\" enctype=\"multipart/form-data\">
-				<label>Choose file: <input id=\"file\" type=\"file\" name=\"file\" accept=\".txt,.docx,.pdf\" required /></label>
-				<div id=\"fileinfo\">No file chosen</div>
-				<div id=\"reason\"></div>
-				<button id=\"parseBtn\" type=\"submit\">Parse</button>
-				<button id=\"validateBtn\" type=\"submit\" formaction=\"/validate_html\" formmethod=\"post\">Validate</button>
-			</form>
-			<div id=\"kb\">
-				<strong>Guidelines KB</strong> — current files: <span id=\"kbList\"></span>
-				<form id=\"kbForm\" method=\"post\" action=\"/guidelines\" enctype=\"multipart/form-data\" style=\"margin-top:8px\;\">
-					<input type=\"file\" name=\"files\" multiple accept=\".txt\" />
-					<button type=\"submit\">Upload guidelines (.txt)</button>
-				</form>
-			</div>
-			<div id=\"meta\"></div>
-			<div id=\"error\"></div>
-			<h3>Text preview</h3>
-			<div id=\"out\"></div>
-			<script>
-			window.addEventListener('DOMContentLoaded', () => {
-				const form = document.getElementById('f');
-				const out = document.getElementById('out');
-				const meta = document.getElementById('meta');
-				const errEl = document.getElementById('error');
-				const fileInput = document.getElementById('file');
-				const fileInfo = document.getElementById('fileinfo');
-				const reason = document.getElementById('reason');
-				const MAX_MB = 128; // match server limit
-
-				fetch('/guidelines').then(r => r.json()).then(j => {
-					document.getElementById('kbList').textContent = j.files.join(', ');
-				}).catch(() => {});
-
-				function updateInfo() {
-					const f = fileInput.files && fileInput.files[0];
-					if (!f) { fileInfo.textContent = 'No file chosen'; reason.textContent = ''; return; }
-					const sizeKB = Math.round(f.size / 1024);
-					fileInfo.textContent = `${f.name} (${sizeKB} KB)`;
-					if (f.size > MAX_MB * 1024 * 1024) { reason.textContent = `File too large. Please upload ≤ ${MAX_MB} MB.`; } else { reason.textContent = ''; }
-				}
-
-				fileInput.addEventListener('change', updateInfo);
-
-				form.addEventListener('submit', async (e) => {
-					if (e.submitter && e.submitter.id === 'parseBtn') {
-						e.preventDefault();
-						const f = fileInput.files && fileInput.files[0];
-						if (!f) { errEl.textContent = 'Please choose a file before parsing.'; return; }
-						if (f.size > MAX_MB * 1024 * 1024) { errEl.textContent = `File too large. Please upload ≤ ${MAX_MB} MB.`; return; }
-						const fd = new FormData(); fd.append('file', f, f.name);
-						out.textContent = 'Parsing...'; meta.textContent = ''; errEl.textContent = '';
-						const res = await fetch('/parse', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'fetch' } });
-						let data; try { data = await res.json(); } catch (ex) { data = { raw: await res.text() } }
-						if (!res.ok) { errEl.textContent = (data.error || data.raw || res.statusText); out.textContent = ''; return; }
-						meta.textContent = 'Meta: ' + JSON.stringify(data.meta);
-						if (data.sections) {
-							out.innerHTML = data.sections.map(s => `<div class=\"section\"><h4>${s.heading}</h4><div>${s.body.replace(/\n/g,'<br/>')}</div></div>`).join('');
-						} else {
-							const text = data.text || '';
-							out.textContent = text ? (text.length > 4000 ? text.slice(0, 4000) + '\n... (truncated) ...' : text) : '(No extractable text found)';
-						}
-					}
-				});
-			});
-			</script>
-			</body>
-			</html>
-		"""
-	)
-	return Response(html, mimetype="text/html")
+	"""Serve the main frontend interface."""
+	return Response(get_frontend_html(), mimetype="text/html")
 
 
 @app.get("/guidelines")
