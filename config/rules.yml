@@ -36,3 +36,16 @@ stale_reference:
 numbered_steps:
   # Require numbered steps under Procedure
   require_numbering: true
+
+# Optional LLM assistance
+llm:
+  enabled: true
+  provider: azure
+  deployment: hackathon-group3
+  temperature: 0.1
+  max_tokens: 1200
+
+# Additional per-finding penalties (additive to severity-based score)
+id_penalties:
+  missing_section: 12
+  missing_approval: 6

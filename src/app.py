@@ -6,11 +6,13 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, Response
 
-from compliance_assistant.parsers.factory import ParserFactory
-from compliance_assistant.validate import validate_text
-from compliance_assistant.kb import load_guidelines
-from compliance_assistant.sectionizer import split_into_sections
-from frontend import get_frontend_html
+from src.compliance_assistant.validate import validate_text
+from src.compliance_assistant.validate import _load_rules as _load_rules_cfg  # type: ignore
+import os
+from src.compliance_assistant.parsers.factory import ParserFactory
+from src.compliance_assistant.kb import load_guidelines
+from src.compliance_assistant.sectionizer import split_into_sections
+from src.frontend import get_frontend_html
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024 * 1024  # 128 MB
@@ -37,6 +39,36 @@ def health():
 def index() -> Response:
 	"""Serve the main frontend interface."""
 	return Response(get_frontend_html(), mimetype="text/html")
+
+
+@app.get("/llm_status")
+def llm_status():
+	try:
+		rules = _load_rules_cfg(None)
+		llm = rules.get("llm", {}) if isinstance(rules, dict) else {}
+		enabled = bool(llm.get("enabled", False))
+		provider = (llm.get("provider") or "").lower()
+		if provider == "azure":
+			env_ok = bool(os.getenv("AZURE_OPENAI_API_KEY") and os.getenv("AZURE_OPENAI_ENDPOINT"))
+			details = {
+				"deployment": llm.get("deployment"),
+				"api_version": llm.get("api_version") or os.getenv("AZURE_OPENAI_API_VERSION"),
+			}
+		else:
+			env_ok = bool(os.getenv("OPENAI_API_KEY"))
+			details = {
+				"model": llm.get("model") or os.getenv("OPENAI_MODEL"),
+			}
+		return jsonify({
+			"enabled": enabled,
+			"provider": provider or ("azure" if os.getenv("AZURE_OPENAI_API_KEY") else ("openai" if os.getenv("OPENAI_API_KEY") else "")),
+			"env_ok": env_ok,
+			"active": enabled and env_ok,
+			"details": details,
+		})
+	except Exception as e:
+		logger.exception("Error checking LLM status")
+		return jsonify({"error": str(e)}), 500
 
 
 @app.get("/guidelines")
