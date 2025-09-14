@@ -4,10 +4,12 @@
 This project is an AI-powered document validation tool designed for healthcare and life sciences organizations. It helps ensure compliance with FDA 21 CFR Part 11 and other relevant standards by analyzing SOPs and related documents for completeness, accuracy, and regulatory alignment.
 
 ## High-Level Design
-- **Backend (Flask):** Handles file uploads, document parsing, sectionizing, validation, and PDF report generation. Integrates with Azure OpenAI for dynamic remediation suggestions.
-- **Frontend (HTML/JS):** Provides a modern UI for uploading documents, viewing validation results, and exporting comprehensive PDF reports.
+- **Backend (Flask):** Handles file uploads, document parsing, sectionizing, validation, and result generation in the form of compliance score. 
+
+- **Frontend (HTML/JS):** Provides a modern UI for uploading documents, viewing validation results
+
 - **Validation Engine:** Uses configurable rules to check for required sections, metadata, revision history, references, and content quality.
-- **AI Remediation:** Calls Azure OpenAI to generate actionable remediation advice for each finding.
+
 
 ## Installation Steps
 1. **Clone the repository:**
@@ -38,7 +40,6 @@ This project is an AI-powered document validation tool designed for healthcare a
 
 ## Third-Party Libraries, Tools, and Frameworks
 - **Flask**: Web framework for backend API and server.
-- **fpdf**: PDF generation library for exporting validation reports.
 - **requests**: HTTP client for calling Azure OpenAI endpoints.
 - **PyYAML**: For reading and parsing YAML config files.
 - **python-docx**: For parsing DOCX documents.
@@ -61,7 +62,7 @@ This project is an AI-powered document validation tool designed for healthcare a
 ## Usage
 - Upload your SOP or compliance document via the frontend.
 - Validate the document and review findings.
-- Export a comprehensive PDF report with AI-generated remediation advice.
+
 
 ## License
-This project is for demonstration and internal use only. Please review third-party library licenses before production use.
+This project is for demonstration and internal use only. 
