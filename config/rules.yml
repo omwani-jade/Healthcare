@@ -4,17 +4,45 @@ severity_weights:
   minor: 1
 
 required_sections:
-  - Purpose
-  - Scope
-  - Responsibilities
-  - Procedure
-  - References
-  - Records
+  - TITLE
+  - DOCUMENT ID
+  - VERSION
+  - EFFECTIVE DATE
+  - APPROVALS
+  - REVISION HISTORY
+  - INTRODUCTION
+  - PURPOSE
+  - SCOPE
+  - RESPONSIBILITIES
+  - DEFINITIONS
+  - PROCEDURE
+  - REFERENCES
 
-approvals_lines:
+metadata_patterns:
+  document_id: '^SOP-\d{3}$'
+  version: '^\d+\.\d+$'
+  effective_date: '^\d{4}-\d{2}-\d{2}$'
+
+revision_history:
+  min_entries: 1
+  required_columns:
+    - Version
+    - Date
+    - Change
+
+reference_patterns:
+  - '^ICH Q\d+$'
+  - '^ISO \d+:\d{4}$'
+  - '^\d+ CFR Part \d+$'
+
+approvals_required:
   - Prepared by
   - Reviewed by
   - Approved by
+
+procedure_requirements:
+  min_steps: 3
+  step_pattern: '^\d+\.'
 
 placeholder_patterns:
   - '\\bTBD\\b'
@@ -22,20 +50,26 @@ placeholder_patterns:
   - '\\[\\s*placeholder\\s*\\]'
   - '\bto be (determined|defined)\b'
   - '\bN/?A\b'
-  - '_{3,}'                # long underscores/blank lines
-  - '<[^>]{2,}>'           # <DATE>, <NAME>, <FILL>, etc.
-  - '\bYYYY[-/ ]?MM[-/ ]?DD\b'  # template dates
+  - '_{3,}'
+  - '<[^>]{2,}>'
+  - '\bYYYY[-/ ]?MM[-/ ]?DD\b'
   - '\bDD[-/ ]?MM[-/ ]?YYYY\b'
   - '\blorem ipsum\b'
   - '\byour (company|organization) name\b'
 
 stale_reference:
-  # if a date older than years_threshold appears next to version/last updated
   years_threshold: 3
 
-numbered_steps:
-  # Require numbered steps under Procedure
-  require_numbering: true
+# Score deductions
+penalties:
+  missing_section: 15
+  missing_metadata: 10
+  invalid_metadata_format: 8
+  missing_approval: 10
+  incomplete_revision_history: 8
+  invalid_reference_format: 5
+  insufficient_procedure_steps: 8
+  placeholder_text: 10
 
 # Optional LLM assistance
 llm:
@@ -44,8 +78,3 @@ llm:
   deployment: hackathon-group3
   temperature: 0.1
   max_tokens: 1200
-
-# Additional per-finding penalties (additive to severity-based score)
-id_penalties:
-  missing_section: 12
-  missing_approval: 6

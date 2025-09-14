@@ -1,0 +1,58 @@
+TITLE
+Synthetic SOP - Compliant
+
+DOCUMENT ID
+SOP-001
+
+VERSION
+1.0
+
+EFFECTIVE DATE
+2021-11-21
+
+APPROVALS
+Prepared by: Scientist A
+Reviewed by: Scientist B
+Approved by: Dr. QA Manager
+
+REVISION HISTORY
+Version  Date  Change
+1.0 2021-11-21 Initial release
+
+INTRODUCTION
+This protocol describes how to screen commercial antibodies by immunoblot using
+wildtype (WT) and knockout (KO) cell lysates. Proteins are separated on a polyacrylamide
+gel and transferred to a nitrocellulose membrane. These membranes are incubated with
+commercial primary antibodies and then with HRP secondary antibodies. A specific band is
+detected in the parental cell lysis and should disappear in the KO lysate.
+
+PURPOSE
+Describe the standard procedure for the activity in scope.
+
+SCOPE
+Applicable to laboratory staff performing the described process.
+
+RESPONSIBILITIES
+QA is responsible for review and approval
+Authors for drafting
+SMEs for review
+
+DEFINITIONS
+WT: Wild Type
+KO: Knockout
+SOP: Standard Operating Procedure
+
+PROCEDURE
+1. Prepare materials
+2. Perform steps as per checklist
+3. Record outcomes
+
+REFERENCES
+ICH Q7
+ISO 13485:2016
+21 CFR Part 11
+
+APPROVALS
+Prepared by: __________
+Reviewed by: __________
+Approved by: __________

@@ -6,13 +6,13 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, Response
 
-from src.compliance_assistant.validate import validate_text
-from src.compliance_assistant.validate import _load_rules as _load_rules_cfg  # type: ignore
+from compliance_assistant.validate import validate_text
+from compliance_assistant.validate import _load_rules as _load_rules_cfg  # type: ignore
 import os
-from src.compliance_assistant.parsers.factory import ParserFactory
-from src.compliance_assistant.kb import load_guidelines
-from src.compliance_assistant.sectionizer import split_into_sections
-from src.frontend import get_frontend_html
+from compliance_assistant.parsers.factory import ParserFactory
+from compliance_assistant.kb import load_guidelines
+from compliance_assistant.sectionizer import split_into_sections
+from frontend import get_frontend_html
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 128 * 1024 * 1024  # 128 MB
