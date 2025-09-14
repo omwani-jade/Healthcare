@@ -1,120 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from __future__ import annotations
-
 import datetime as _dt
 import os
 import re
@@ -414,7 +298,7 @@ def _maybe_llm_findings(text: str, llm_cfg: Optional[Dict[str, object]]) -> List
 	return []
 
 
-def validate_text(text: str, meta: Optional[Dict[str, str]] = None, rules_path: Optional[str] = None, kb: Optional[KB] = None) -> ValidationResult:
+def validate_text(text: str, meta: Optional[Dict[str, str]] = None, rules_path: Optional[str] = None, kb: Optional[any] = None) -> ValidationResult:
 	rules = _load_rules(rules_path)
 	findings: List[Finding] = []
 	findings += _detect_required_sections(text, rules.get("required_sections", []))
